@@ -113,6 +113,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public void startOrStop(Integer status, Long id) {
+        // 执行这个sql语句  update employee set status = ? where id = ?;
+       Employee employee = Employee.builder()
+               .status(status)
+               .id(id)
+               .build();
+        employeeMapper.update(employee);
+    }
+
+    @Override
     public void statusUpdate(int status, Long id) {
 
     }
