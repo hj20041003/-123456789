@@ -5,7 +5,7 @@
 
     <!-- 通用结果映射 -->
     <resultMap id="EmployeeResultMap" type="com.sky.entity.Employee">
-        <id column="id" property="id"/>
+
         <result column="username" property="username"/>
         <result column="name" property="name"/>
         <result column="password" property="password"/>
@@ -22,7 +22,7 @@
     <!-- 插入员工 -->
     <insert id="insert" parameterType="com.sky.entity.Employee" useGeneratedKeys="true" keyProperty="id">
         insert into employee (
-            username, name, password, phone, sex, id_number, status, 
+            username, name, password, phone, sex, id_number, status,
             create_time, update_time, create_user, update_user
         ) values (
             #{username}, #{name}, #{password}, #{phone}, #{sex}, #{idNumber}, #{status},

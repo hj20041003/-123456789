@@ -12,6 +12,27 @@ spring:
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
+      # Druid连接池配置
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 获取连接时最大等待时间（毫秒）
+      max-wait: 60000
+      # 检测连接是否有效的SQL
+      validation-query: SELECT 1
+      # 申请连接时检测，建议关闭（影响性能）
+      test-on-borrow: false
+      # 归还连接时检测
+      test-on-return: false
+      # 空闲连接检测
+      test-while-idle: true
+      # 配置间隔多久才进行一次检测，需要关闭检测时才检测（毫秒）
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间（毫秒）
+      min-evictable-idle-time-millis: 300000
+      # 指定因为session超过时间内得不到创建或者是否需要终止
+      remove-abandoned: true
+      remove-abandoned-timeout-millis: 180000
 
 mybatis:
   #mapper配置文件
@@ -23,11 +44,10 @@ mybatis:
 
 logging:
   level:
-    com:
-      sky:
-        mapper: debug
-        service: info
-        controller: info
+    org.springframework.boot.autoconfigure: DEBUG
+    com.sky.mapper: debug
+    com.sky.service: info
+    com.sky.controller: info
 
 sky:
   jwt:

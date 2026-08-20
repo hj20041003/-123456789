@@ -5,4 +5,12 @@ sky:
     port: 3306
     database: sky_take_out
     username: root
-    password: root
+    password: 1234
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      # password: your_redis_password  # 如果 Redis 有密码,取消注释
+      database: 0  # 使用第 0 个数据库
