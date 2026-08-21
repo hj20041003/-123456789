@@ -1,6 +1,7 @@
 package com.sky.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sky.dto.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee implements Serializable {
+public class Employee extends EmployeeDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
