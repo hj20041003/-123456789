@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.validation.BindException;
-import org.springframework.http.HttpStatus;
 
 /**
  * 全局异常处理器，处理项目中抛出的业务异常
@@ -46,21 +43,5 @@ public class GlobalExceptionHandler {
             return Result.error(MessageConstant.UNKNOWN_ERROR);
 
         }
-    }
-
-    /**
-     * 处理参数绑定异常
-     */
-    @ExceptionHandler(BindException.class)
-    public Result exceptionHandler(BindException ex) {
-        log.warn("参数绑定异常：{}", ex.getMessage());
-        // 返回成功状态码，但不返回错误信息给前端
-        return Result.error("参数无效");
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result exceptionHandler(MethodArgumentNotValidException ex) {
-        log.warn("参数校验异常：{}", ex.getMessage());
-        return Result.error("参数校验失败");
     }
 }
