@@ -72,5 +72,18 @@ public class DishController {
     }
     //根据id修改菜品基本信息和对应的口味数据
 
+    /**
+     * 根据分类id查询菜品列表
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品列表")
+    public Result<List<Dish>> listByCategoryId(Long categoryId) {
+        log.info("根据分类id查询菜品列表：{}", categoryId);
+        List<Dish> list = dishService.listByCategoryId(categoryId);
+        return Result.success(list);
+    }
+
     }
 

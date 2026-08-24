@@ -39,11 +39,12 @@
     </update>
 <select id="list" resultType="Category">
         select * from category
-        where type =1
-        <if test="type != null">
+        <where><if test="type != null">
             and type = #{type}
+        </if></where>
 
-        </if>
+
+
         order by sort asc,create_time asc
     </select>
 </mapper>
