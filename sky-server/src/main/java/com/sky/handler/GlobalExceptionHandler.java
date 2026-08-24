@@ -63,4 +63,13 @@ public class GlobalExceptionHandler {
         log.warn("参数校验异常：{}", ex.getMessage());
         return Result.error("参数校验失败");
     }
+
+    /**
+     * 处理其他未捕获的异常（兜底），避免返回空白500
+     */
+    @ExceptionHandler(Exception.class)
+    public Result exceptionHandler(Exception ex) {
+        log.error("系统异常：{}", ex.getMessage(), ex);
+        return Result.error("服务器内部错误，请稍后重试");
+    }
 }

@@ -12,6 +12,7 @@ spring:
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
+
       # Druid连接池配置
       initial-size: 5
       min-idle: 5
@@ -33,7 +34,11 @@ spring:
       # 指定因为session超过时间内得不到创建或者是否需要终止
       remove-abandoned: true
       remove-abandoned-timeout-millis: 180000
-
+  redis:
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+    password : ${sky.redis.password}
+    database: 10
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
