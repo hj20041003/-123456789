@@ -8,11 +8,14 @@ import com.sky.entity.ShoppingCart;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.mapper.ShoppingCartMapper;
+import com.sky.result.Result;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sky.service.ShoppingCartService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,15 +85,47 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      *
      */
 
+    @Override
     public List<ShoppingCart> showShoppingCart() {
-//        获取到当前微信用户的id
-
-
        Long UserId=BaseContext.getCurrentId();
        ShoppingCart shoppingCart = ShoppingCart.builder().userId(UserId).build();
         List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
-
         return list;
     }
-}
+
+    /**
+     * 减少购物车商品数量
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+
+        if (list != null && !list.isEmpty()) {
+            ShoppingCart cart = list.get(0);
+            if (cart.getNumber() > 1) {
+//                数量大于1，减少1
+                cart.setNumber(cart.getNumber() - 1);
+                shoppingCartMapper.updateNumberById(cart);
+            } else {
+//                数量为1，直接删除整条记录
+                shoppingCartMapper.deleteById(cart.getId());
+            }
+        }
+    }
+    /*
+     * 清空购物车
+     *
+     */
+
+
+    @Override
+    public void cleanShoppingCart() {
+        Long userId = BaseContext.getCurrentId();
+        shoppingCartMapper.deleteByUserId(userId);}
+    }
+
 
