@@ -36,7 +36,7 @@ public class ShoppingCartController {
     @ApiOperation("查询购物车")
     public Result<List<ShoppingCart>> list() {
         log.info("查询购物车");
-        List<ShoppingCart> list = shoppingCartService.listShoppingCart();
+        List<ShoppingCart> list = shoppingCartService.showShoppingCart();
         return Result.success(list);
     }
 }
