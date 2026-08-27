@@ -20,9 +20,4 @@ public class OrderPaymentVO implements Serializable {
     private String signType; //签名算法
     private String packageStr; //统一下单接口返回的 prepay_id 参数值
 
-    /**
-     * 是否为模拟支付（true：前端应跳过 wx.requestPayment，直接跳转成功页）
-     */
-    private Boolean mock;
-
 }
