@@ -20,4 +20,9 @@ public class WeChatProperties {
     private String notifyUrl; //支付成功的回调地址
     private String refundNotifyUrl; //退款成功的回调地址
 
+    /**
+     * 是否启用模拟支付（true：不调用微信V3，直接将订单置为已支付，仅开发/测试使用）
+     */
+    private Boolean mockPay;
+
 }
