@@ -31,8 +31,8 @@ spring:
       time-between-eviction-runs-millis: 60000
       # 配置一个连接在池中最小生存的时间（毫秒）
       min-evictable-idle-time-millis: 300000
-      # 指定因为session超过时间内得不到创建或者是否需要终止
-      remove-abandoned: true
+      # 关闭废弃连接回收，避免正常空闲连接被误判为废弃并打印 ERROR 日志
+      remove-abandoned: false
       remove-abandoned-timeout-millis: 180000
   redis:
     host: ${sky.redis.host}

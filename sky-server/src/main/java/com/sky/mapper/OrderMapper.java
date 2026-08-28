@@ -45,6 +45,13 @@ import java.time.LocalDateTime;
                       @Param("checkOutTime") LocalDateTime checkOutTime,
                       @Param("id") Long id);
     /**
+     * 根据状态统计订单数量
+     * @param status
+     */
+    @Select("select count(*) from orders where status = #{status}")
+    Integer countStatus(Integer status);
+
+    /**
      * 分页条件查询并按下单时间排序
      * @param ordersPageQueryDTO
      */
