@@ -74,8 +74,3 @@ sky:
   wechat:
     appid: ${sky.wechat.appid}
     secret: ${sky.wechat.secret}
-    mock-pay: true
-  shop:
-    address: ${sky.shop.address}
-  baidu:
-    ak: ${sky.baidu.ak}
