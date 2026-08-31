@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sky.properties.WeChatProperties;
 import com.sky.service.OrderService;
+import com.sky.websocket.WebSocketServer;
 import com.wechat.pay.contrib.apache.httpclient.util.AesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
@@ -29,16 +31,23 @@ public class PayNotifyController {
     @Autowired
     private WeChatProperties weChatProperties;
 
+
     /**
      * 支付成功回调
      *
      * @param request
      */
-    @RequestMapping("/paySuccess")
+    @PostMapping("/paySuccess")
     public void paySuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //读取数据
         String body = readData(request);
         log.info("支付成功回调：{}", body);
+
+        //过滤无效的探测请求（空请求体无法解析，直接忽略）
+        if (body == null || body.trim().isEmpty()) {
+            log.warn("支付回调请求体为空，忽略本次请求");
+            return;
+        }
 
         //数据解密
         String plainText = decryptData(body);

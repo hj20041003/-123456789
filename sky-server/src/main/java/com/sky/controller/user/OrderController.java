@@ -31,7 +31,7 @@ public class OrderController {
         OrderSubmitVO orderSubmitVO = orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
-    /**
+    /*
      * 订单支付
      *
      * @param ordersPaymentDTO
@@ -59,7 +59,7 @@ public class OrderController {
         OrderVO orderVO = orderService.detailOrThrow(id);
         return Result.success(orderVO);
     }
-    /**
+    /*
      * 历史订单查询
      *
      * @param page
@@ -73,7 +73,7 @@ public class OrderController {
         PageResult pageResult = orderService.pageQuery4User(page, pageSize, status);
         return Result.success(pageResult);
     }
-    /**
+    /*
      * 用户取消订单
      *
      * @return
@@ -94,6 +94,14 @@ public class OrderController {
     @ApiOperation("再来一单")
     public Result repetition(@PathVariable Long id) {
         orderService.repetition(id);
+        return Result.success();
+}
+/* 客户催单 */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("客户催单")
+    public Result reminder(@PathVariable Long id) {
+        orderService.reminder(id);
+
         return Result.success();
     }
 

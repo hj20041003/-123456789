@@ -23,6 +23,8 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
+import io.lettuce.core.dynamic.output.OutputType;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -66,6 +68,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Value("${sky.baidu.ak}")
     private String ak;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
 
         /*
@@ -159,6 +163,9 @@ public class OrderServiceImpl implements OrderService {
             LocalDateTime checkOutTime = LocalDateTime.now();
             orderMapper.updateStatus(Orders.TO_BE_CONFIRMED, Orders.PAID, checkOutTime, ordersDB.getId());
 
+            // 模拟支付同样需要触发来单提醒，保证管理端能收到 WebSocket 消息
+            sendOrderPaidNotify(ordersDB);
+
             // 构造完整的 wx.requestPayment 所需参数（全部 String 类型，避免前端参数校验失败）
             OrderPaymentVO vo = new OrderPaymentVO();
             vo.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
@@ -207,6 +214,23 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        // 通过webSocket向管理端发送来单提醒消息
+        sendOrderPaidNotify(ordersDB);
+    }
+
+    /*
+     * 支付成功后向管理端推送来单提醒（WebSocket）
+     *
+     * @param ordersDB 已支付的订单
+     */
+    private void sendOrderPaidNotify(Orders ordersDB) {
+        Map map = new HashMap();
+        map.put("type", 1);//1表示来单提醒2表示客户催单
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "订单号：" + ordersDB.getNumber());
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
     /*
      * 订单详情查询
@@ -324,7 +348,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setCancelTime(LocalDateTime.now());
         orderMapper.update(orders);
     }
-    /**
+    /*
      * 再来一单
      *
      * @param id
@@ -388,7 +412,7 @@ public class OrderServiceImpl implements OrderService {
         return orderVOList;
     }
 
-    /**
+    /*
      * 根据订单id获取菜品信息字符串
      *
      * @param orders
@@ -591,6 +615,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setDeliveryTime(LocalDateTime.now());
 
         orderMapper.update(orders);
+
     }
     /**
      * 检查客户的收货地址是否超出配送范围
@@ -655,8 +680,29 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException("超出配送范围");
         }
     }
+    /*
+     * 客户催单
+     *
+     * @param id
+     */
+    public void reminder(Long id) {
+            // 根据id查询订单
+            Orders ordersDB = orderMapper.getById(id);
+
+            // 校验订单是否存在，
+            if (ordersDB == null ) {
+                throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+            }
+        Map map = new HashMap();
+        map.put("type", 2);//1表示来单提醒2表示客户催单
+        map.put("orderId", id);
+        map.put("content", "订单号：" + ordersDB.getNumber());
+
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
+
+    }}
     
-}
+
 
 
 
