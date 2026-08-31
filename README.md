@@ -1,4 +1,4 @@
-# 苍穹外卖 · 后端服务（sky-take-out）
+#  后端服务（sky-take-out）
 
 > 面向餐饮外卖 O2O 场景的后端服务，基于 **Spring Boot** 多模块架构，为「商家管理端（Vue）」与「用户端微信小程序」提供统一 REST 接口，集成 JWT 鉴权、Redis 缓存、阿里云 OSS、微信支付 V3、定时任务与 Excel 报表导出等能力。
 
