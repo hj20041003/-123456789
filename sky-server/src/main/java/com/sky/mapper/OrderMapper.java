@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /*插入订单数据*/
@@ -44,14 +45,21 @@ import java.time.LocalDateTime;
                       @Param("orderPaidStatus") Integer orderPaidStatus,
                       @Param("checkOutTime") LocalDateTime checkOutTime,
                       @Param("id") Long id);
-    /**
+    /*
      * 根据状态统计订单数量
      * @param status
      */
     @Select("select count(*) from orders where status = #{status}")
     Integer countStatus(Integer status);
+    /*
+     * 根据状态和下单时间查询订单
+     * @param status
+     * @param orderTime
+     */
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
+    List<Orders>  getByStatusAndOrderTimeLT( Integer status, LocalDateTime orderTime);
 
-    /**
+    /*
      * 分页条件查询并按下单时间排序
      * @param ordersPageQueryDTO
      */
