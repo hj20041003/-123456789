@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 
 /*插入订单数据*/
@@ -66,4 +67,9 @@ import java.util.List;
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime orderTime);
 
-    }
+    /**
+     * 根据时间范围和状态统计营业额
+     * @param map (begin, end, status)
+     */
+    Double sumByMap(Map map);
+}
