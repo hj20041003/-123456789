@@ -27,6 +27,8 @@ spring:
       test-on-return: false
       # 空闲连接检测
       test-while-idle: true
+      # 空闲连接保活：检测线程定期对空闲连接执行 ping，避免长时间无包收发被误判为废弃
+      keep-alive: true
       # 配置间隔多久才进行一次检测，需要关闭检测时才检测（毫秒）
       time-between-eviction-runs-millis: 60000
       # 配置一个连接在池中最小生存的时间（毫秒）
