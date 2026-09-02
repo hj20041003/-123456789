@@ -80,11 +80,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     }
 
-    /*
+    /**
      * 查询当前用户的购物车
      *
+     * @return 购物车列表
      */
-
     @Override
     public List<ShoppingCart> showShoppingCart() {
        Long UserId=BaseContext.getCurrentId();
@@ -95,7 +95,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     /**
      * 减少购物车商品数量
-     * @param shoppingCartDTO
+     *
+     * @param shoppingCartDTO 购物车数据
      */
     @Override
     public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
@@ -116,17 +117,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             }
         }
     }
-    /*
+    /**
      * 清空购物车
-     *
      */
-
-
     @Override
     public void cleanShoppingCart() {
         Long userId = BaseContext.getCurrentId();
-        shoppingCartMapper.deleteByUserId(userId);}
-
+        shoppingCartMapper.deleteByUserId(userId);
     }
-
-
+}

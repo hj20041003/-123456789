@@ -15,70 +15,74 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
-     * 订单管理
+ * 订单管理
+ */
+@RestController("adminOrderController")
+@RequestMapping("/admin/order")
+@Slf4j
+@Api(tags = "订单管理接口")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    /**
+     * 订单搜索
+     *
+     * @param ordersPageQueryDTO 分页查询条件
+     * @return 订单分页结果
      */
-    @RestController("adminOrderController")
-    @RequestMapping("/admin/order")
-    @Slf4j
-    @Api(tags = "订单管理接口")
-    public class OrderController {
+    @GetMapping("/conditionSearch")
+    @ApiOperation("订单搜索")
+    public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageResult pageResult = orderService.conditionSearch(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
 
-        @Autowired
-        private OrderService orderService;
+    /**
+     * 各个状态的订单数量统计
+     *
+     * @return 各状态订单数量
+     */
+    @GetMapping("/statistics")
+    @ApiOperation("各个状态的订单数量统计")
+    public Result<OrderStatisticsVO> statistics() {
+        OrderStatisticsVO orderStatisticsVO = orderService.statistics();
+        return Result.success(orderStatisticsVO);
+    }
 
-        /**
-         * 订单搜索
-         *
-         * @param ordersPageQueryDTO
-         * @return
-         */
-        @GetMapping("/conditionSearch")
-        @ApiOperation("订单搜索")
-        public Result<PageResult> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
-            PageResult pageResult = orderService.conditionSearch(ordersPageQueryDTO);
-            return Result.success(pageResult);
-        }
+    /**
+     * 订单详情
+     *
+     * @param id 订单id
+     * @return 订单详情
+     */
+    @GetMapping("/details/{id}")
+    @ApiOperation("查询订单详情")
+    public Result<OrderVO> details(@PathVariable("id") Long id) {
+        OrderVO orderVO = orderService.details(id);
+        return Result.success(orderVO);
+    }
 
-        /*
-         * 各个状态的订单数量统计
-         *
-         * @return
-         */
-        @GetMapping("/statistics")
-        @ApiOperation("各个状态的订单数量统计")
-        public Result<OrderStatisticsVO> statistics() {
-            OrderStatisticsVO orderStatisticsVO = orderService.statistics();
-            return Result.success(orderStatisticsVO);
-        }
-        /**
-         * 订单详情
-         *
-         * @param id
-         * @return
-         */
-        @GetMapping("/details/{id}")
-        @ApiOperation("查询订单详情")
-        public Result<OrderVO> details(@PathVariable("id") Long id) {
-            OrderVO orderVO = orderService.details(id);
-            return Result.success(orderVO);
-        }
-        /**
-         * 接单
-         *
-         * @return
-         */
-        @PutMapping("/confirm")
-        @ApiOperation("接单")
-        public Result confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO) {
-            orderService.confirm(ordersConfirmDTO);
-            return Result.success();
-        }
-    /*
+    /**
+     * 接单
+     *
+     * @param ordersConfirmDTO 接单数据
+     * @return 操作结果
+     */
+    @PutMapping("/confirm")
+    @ApiOperation("接单")
+    public Result confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO) {
+        orderService.confirm(ordersConfirmDTO);
+        return Result.success();
+    }
+
+    /**
      * 拒单
      *
-     * @return
+     * @param ordersRejectionDTO 拒单数据
+     * @return 操作结果
      */
     @PutMapping("/rejection")
     @ApiOperation("拒单")
@@ -86,13 +90,13 @@ import org.springframework.web.bind.annotation.*;
         orderService.rejection(ordersRejectionDTO);
         return Result.success();
     }
-    
-    /*
+
+    /**
      * 取消订单
      * 前端请求路径为 /admin/order/cancel，订单id和取消原因均通过请求体传入
      *
      * @param ordersCancelDTO 包含订单id和取消原因
-     * @return
+     * @return 操作结果
      */
     @PutMapping("/cancel")
     @ApiOperation("取消订单")
@@ -101,10 +105,12 @@ import org.springframework.web.bind.annotation.*;
         orderService.cancel(ordersCancelDTO);
         return Result.success();
     }
-    /*
+
+    /**
      * 派送订单
      *
-     * @return
+     * @param id 订单id
+     * @return 操作结果
      */
     @PutMapping("/delivery/{id}")
     @ApiOperation("派送订单")
@@ -112,10 +118,12 @@ import org.springframework.web.bind.annotation.*;
         orderService.delivery(id);
         return Result.success();
     }
-    /*
+
+    /**
      * 完成订单
      *
-     * @return
+     * @param id 订单id
+     * @return 操作结果
      */
     @PutMapping("/complete/{id}")
     @ApiOperation("完成订单")

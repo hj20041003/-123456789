@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     private AddressBookMapper addressBookMapper;
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
-@Autowired
+    @Autowired
     private UserMapper userMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
@@ -72,14 +72,15 @@ public class OrderServiceImpl implements OrderService {
     private WebSocketServer webSocketServer;
 
 
-        /*
+    /**
      * 用户提交订单
-     * @param ordersSubmitDTO
-     * @return
+     *
+     * @param ordersSubmitDTO 订单提交数据
+     * @return 订单提交结果
      */
     @Transactional
     public OrderSubmitVO submitOrder(OrdersSubmitDTO ordersSubmitDTO) {
-//        处理各种业务异常（地址簿为空，购物车数据为空）
+        //校验地址簿、购物车等业务数据是否存在
 
         AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());
         if (addressBook == null){
@@ -137,11 +138,11 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         return orderSubmitVO;
     }
-    /*
+    /**
      * 订单支付
      *
-     * @param ordersPaymentDTO
-     * @return
+     * @param ordersPaymentDTO 订单支付数据
+     * @return 支付所需参数
      */
     public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
         // 当前登录用户id
@@ -195,10 +196,10 @@ public class OrderServiceImpl implements OrderService {
         vo.setPackageStr(jsonObject.getString("package"));
         return vo;
     }
-    /*
+    /**
      * 支付成功，修改订单状态
      *
-     * @param outTradeNo
+     * @param outTradeNo 微信支付交易号
      */
     public void paySuccess(String outTradeNo) {
 
@@ -219,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
         sendOrderPaidNotify(ordersDB);
     }
 
-    /*
+    /**
      * 支付成功后向管理端推送来单提醒（WebSocket）
      *
      * @param ordersDB 已支付的订单
@@ -232,11 +233,11 @@ public class OrderServiceImpl implements OrderService {
         String json = JSON.toJSONString(map);
         webSocketServer.sendToAllClient(json);
     }
-    /*
-     * 订单详情查询
+    /**
+     * 订单详情查询（校验用户归属）
      *
-     * @param id
-     * @return
+     * @param id 订单id
+     * @return 订单详情
      */
     public OrderVO detailOrThrow(Long id) {
         Long userId = BaseContext.getCurrentId();
@@ -265,13 +266,13 @@ public class OrderServiceImpl implements OrderService {
 
         return orderVO;
     }
-    /*
+    /**
      * 用户端订单分页查询
      *
-     * @param pageNum
-     * @param pageSize
-     * @param status
-     * @return
+     * @param pageNum  页码
+     * @param pageSize 每页记录数
+     * @param status   订单状态
+     * @return 订单分页结果
      */
     public PageResult pageQuery4User(int pageNum, int pageSize, Integer status) {
         // 设置分页
@@ -303,10 +304,10 @@ public class OrderServiceImpl implements OrderService {
         }
         return new PageResult(page.getTotal(), list);
     }
-    /*
+    /**
      * 用户取消订单
      *
-     * @param id
+     * @param id 订单id
      */
     public void userCancelById(Long id) throws Exception {
         // 根据id查询订单
@@ -348,10 +349,10 @@ public class OrderServiceImpl implements OrderService {
         orders.setCancelTime(LocalDateTime.now());
         orderMapper.update(orders);
     }
-    /*
+    /**
      * 再来一单
      *
-     * @param id
+     * @param id 订单id
      */
     public void repetition(Long id) {
         // 查询当前用户id
@@ -375,11 +376,11 @@ public class OrderServiceImpl implements OrderService {
         // 将购物车对象批量添加到数据库
         shoppingCartMapper.insertBatch(shoppingCartList);
     }
-    /*
+    /**
      * 订单搜索
      *
-     * @param ordersPageQueryDTO
-     * @return
+     * @param ordersPageQueryDTO 分页查询条件
+     * @return 订单分页结果
      */
     public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
@@ -412,11 +413,11 @@ public class OrderServiceImpl implements OrderService {
         return orderVOList;
     }
 
-    /*
+    /**
      * 根据订单id获取菜品信息字符串
      *
-     * @param orders
-     * @return
+     * @param orders 订单信息
+     * @return 菜品信息字符串
      */
     private String getOrderDishesStr(Orders orders) {
         // 查询订单菜品详情信息（订单中的菜品和数量）
@@ -432,10 +433,10 @@ public class OrderServiceImpl implements OrderService {
         return String.join("", orderDishList);
     }
 
-    /*
+    /**
      * 各个状态的订单数量统计
      *
-     * @return
+     * @return 各状态订单数量
      */
     public OrderStatisticsVO statistics() {
         // 根据状态，分别查询出待接单、待派送、派送中的订单数量
@@ -451,10 +452,11 @@ public class OrderServiceImpl implements OrderService {
         return orderStatisticsVO;
     }
 
-    /*
+    /**
      * 管理端查询订单详情（不校验用户归属）
-     * @param id
-     * @return
+     *
+     * @param id 订单id
+     * @return 订单详情
      */
     public OrderVO details(Long id) {
         // 根据订单id查询订单
@@ -481,10 +483,10 @@ public class OrderServiceImpl implements OrderService {
 
         return orderVO;
     }
-    /*
+    /**
      * 接单
      *
-     * @param ordersConfirmDTO
+     * @param ordersConfirmDTO 接单数据
      */
     public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
         Orders orders = Orders.builder()
@@ -494,10 +496,10 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.update(orders);
     }
-    /*
+    /**
      * 拒单
      *
-     * @param ordersRejectionDTO
+     * @param ordersRejectionDTO 拒单数据
      */
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) throws Exception {
         // 根据id查询订单
@@ -537,7 +539,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 取消订单
      *
-     * @param ordersCancelDTO
+     * @param ordersCancelDTO 取消订单数据
      */
     public void cancel(OrdersCancelDTO ordersCancelDTO) throws Exception {
         // 根据id查询订单
@@ -576,7 +578,7 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 派送订单
      *
-     * @param id
+     * @param id 订单id
      */
     public void delivery(Long id) {
         // 根据id查询订单
@@ -594,10 +596,10 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.update(orders);
     }
-    /*
+    /**
      * 完成订单
      *
-     * @param id
+     * @param id 订单id
      */
     public void complete(Long id) {
         // 根据id查询订单
@@ -619,7 +621,8 @@ public class OrderServiceImpl implements OrderService {
     }
     /**
      * 检查客户的收货地址是否超出配送范围
-     * @param address
+     *
+     * @param address 用户收货地址
      */
     private void checkOutOfRange(String address) {
         Map map = new HashMap();
@@ -680,32 +683,26 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException("超出配送范围");
         }
     }
-    /*
+    /**
      * 客户催单
      *
-     * @param id
+     * @param id 订单id
      */
     public void reminder(Long id) {
-            // 根据id查询订单
-            Orders ordersDB = orderMapper.getById(id);
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
 
-            // 校验订单是否存在，
-            if (ordersDB == null ) {
-                throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
-            }
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
         Map map = new HashMap();
         map.put("type", 2);//1表示来单提醒2表示客户催单
         map.put("orderId", id);
         map.put("content", "订单号：" + ordersDB.getNumber());
 
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
-
-    }}
-    
-
-
-
-
-
-
+    }
+}
 

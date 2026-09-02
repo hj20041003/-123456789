@@ -1,4 +1,5 @@
 package com.sky.controller.user;
+
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
@@ -13,16 +14,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 用户端订单管理
+ */
 @RestController("userOrderController")
 @RequestMapping("user/order")
 @Api(tags = "用户订单相关接口")
 @Slf4j
-
 public class OrderController {
+
     @Autowired
     private OrderService orderService;
-    /*
+
+    /**
      * 用户提交订单
+     *
+     * @param ordersSubmitDTO 订单提交数据
+     * @return 订单提交结果
      */
     @PostMapping("submit")
     @ApiOperation("用户提交订单")
@@ -31,11 +39,12 @@ public class OrderController {
         OrderSubmitVO orderSubmitVO = orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
-    /*
+
+    /**
      * 订单支付
      *
-     * @param ordersPaymentDTO
-     * @return
+     * @param ordersPaymentDTO 订单支付数据
+     * @return 支付所需参数
      */
     @PutMapping("/payment")
     @ApiOperation("订单支付")
@@ -46,11 +55,11 @@ public class OrderController {
         return Result.success(orderPaymentVO);
     }
 
-    /*
+    /**
      * 订单详情查询
      *
-     * @param id
-     * @return
+     * @param id 订单id
+     * @return 订单详情
      */
     @GetMapping("/orderDetail/{id}")
     @ApiOperation("订单详情查询")
@@ -59,13 +68,14 @@ public class OrderController {
         OrderVO orderVO = orderService.detailOrThrow(id);
         return Result.success(orderVO);
     }
-    /*
+
+    /**
      * 历史订单查询
      *
-     * @param page
-     * @param pageSize
+     * @param page     页码
+     * @param pageSize 每页记录数
      * @param status   订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
-     * @return
+     * @return 订单分页结果
      */
     @GetMapping("/historyOrders")
     @ApiOperation("历史订单查询")
@@ -73,10 +83,12 @@ public class OrderController {
         PageResult pageResult = orderService.pageQuery4User(page, pageSize, status);
         return Result.success(pageResult);
     }
-    /*
+
+    /**
      * 用户取消订单
      *
-     * @return
+     * @param id 订单id
+     * @return 操作结果
      */
     @PutMapping("/cancel/{id}")
     @ApiOperation("取消订单")
@@ -84,24 +96,30 @@ public class OrderController {
         orderService.userCancelById(id);
         return Result.success();
     }
+
     /**
      * 再来一单
      *
-     * @param id
-     * @return
+     * @param id 订单id
+     * @return 操作结果
      */
     @PostMapping("/repetition/{id}")
     @ApiOperation("再来一单")
     public Result repetition(@PathVariable Long id) {
         orderService.repetition(id);
         return Result.success();
-}
-/* 客户催单 */
+    }
+
+    /**
+     * 客户催单
+     *
+     * @param id 订单id
+     * @return 操作结果
+     */
     @GetMapping("/reminder/{id}")
     @ApiOperation("客户催单")
     public Result reminder(@PathVariable Long id) {
         orderService.reminder(id);
-
         return Result.success();
     }
 

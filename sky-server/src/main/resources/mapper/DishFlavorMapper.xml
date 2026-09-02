@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.DishFlavorMapper">
 
+    <!-- 批量插入菜品口味数据 -->
     <insert id="insertBatch" >
         insert into dish_flavor (dish_id, name, value)values
         <foreach collection="list" item="df" separator=",">
@@ -10,6 +11,7 @@
         </foreach>
 
     </insert>
+    <!-- 根据菜品id删除口味数据 -->
     <delete id="deleteByDishId">
         delete from dish_flavor where dish_id = #{dishId}
     </delete>

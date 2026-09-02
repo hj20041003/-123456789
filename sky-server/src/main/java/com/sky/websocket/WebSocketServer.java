@@ -30,20 +30,21 @@ public class WebSocketServer {
         sessionMap.put(sid, session);
     }
 
-    /*
+    /**
      * 收到客户端消息后调用的方法
      *
      * @param message 客户端发送过来的消息
+     * @param sid     客户端会话标识
      */
     @OnMessage
     public void onMessage(String message, @PathParam("sid") String sid) {
         System.out.println("收到来自客户端：" + sid + "的信息:" + message);
     }
 
-    /*
+    /**
      * 连接关闭调用的方法
      *
-     * @param sid
+     * @param sid 客户端会话标识
      */
     @OnClose
     public void onClose(@PathParam("sid") String sid) {
@@ -51,10 +52,10 @@ public class WebSocketServer {
         sessionMap.remove(sid);
     }
 
-    /*
-     * 群发
+    /**
+     * 群发消息给所有已连接的客户端
      *
-     * @param message
+     * @param message 要发送的消息
      */
     public void sendToAllClient(String message) {
         Collection<Session> sessions = sessionMap.values();

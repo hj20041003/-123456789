@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.DishMapper">
+    <!-- 插入菜品数据 -->
 <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     insert into dish (name, category_id, price, description, image, status)
     values (#{name}, #{categoryId}, #{price}, #{description}, #{image}, #{status})
 </insert>
+    <!-- 分页条件查询菜品（含分类名称） -->
     <select id="pageQuery" resultType="com.sky.vo.DishVO">
 
         select d.id, d.name, d.category_id, d.price, d.image, d.description, d.status,
@@ -26,6 +28,7 @@
         </where>
         order by d.create_time desc
     </select>
+    <!-- 修改菜品信息 -->
     <update id="update">
         update dish
         <set>
@@ -57,6 +60,7 @@
         </set>
         where id = #{id}
     </update>
+    <!-- 动态条件查询菜品列表 -->
     <select id="list" resultType="com.sky.entity.Dish">
         select * from dish
         <where>
@@ -72,6 +76,7 @@
         </where>
         order by create_time desc
     </select>
+    <!-- 根据状态和分类id统计菜品数量 -->
     <select id="countByMap" resultType="java.lang.Integer">
         select count(id) from dish
         <where>

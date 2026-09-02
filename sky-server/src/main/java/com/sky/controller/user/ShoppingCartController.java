@@ -12,15 +12,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * C端购物车管理
+ */
 @RestController
 @RequestMapping("/user/shoppingCart")
 @Slf4j
 @Api(tags = "C端购物车相关接口")
-
 public class ShoppingCartController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    /**
+     * 添加购物车
+     *
+     * @param shoppingCartDTO 购物车数据
+     * @return 操作结果
+     */
     @PostMapping("/add")
     @ApiOperation(value = "添加购物车")
     public Result add(@RequestBody ShoppingCartDTO shoppingCartDTO) {
@@ -39,8 +47,11 @@ public class ShoppingCartController {
         List<ShoppingCart> list = shoppingCartService.showShoppingCart();
         return Result.success(list);
     }
-    /*
+    /**
      * 减少购物车商品数量
+     *
+     * @param shoppingCartDTO 购物车数据
+     * @return 操作结果
      */
     @PostMapping("/sub")
     @ApiOperation("减少购物车商品数量")
@@ -49,8 +60,10 @@ public class ShoppingCartController {
         shoppingCartService.subShoppingCart(shoppingCartDTO);
         return Result.success();
     }
-    /*
+    /**
      * 清空购物车
+     *
+     * @return 操作结果
      */
     @DeleteMapping("/clean")
     @ApiOperation("清空购物车")

@@ -5,6 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+/**
+ * 项目启动类
+ */
 @SpringBootApplication
 @EnableTransactionManagement //开启注解方式的事务管理
 @EnableScheduling //开启定时任务功能

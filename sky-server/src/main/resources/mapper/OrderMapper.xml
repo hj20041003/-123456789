@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.OrderMapper">
+    <!-- 插入订单数据 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into orders ( number, status, user_id, address_book_id, order_time, checkout_time, pay_method, pay_status,
                              amount, remark, phone, address, consignee, estimated_delivery_time, delivery_status,
@@ -10,6 +11,7 @@
                 #{amount}, #{remark}, #{phone}, #{address}, #{consignee}, #{estimatedDeliveryTime}, #{deliveryStatus},
                 #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
+    <!-- 修改订单信息 -->
     <update id="update" parameterType="com.sky.entity.Orders">
         update orders
         <set>
@@ -40,6 +42,7 @@
         </set>
         where id = #{id}
     </update>
+    <!-- 分页条件查询订单并按下单时间排序 -->
     <select id="pageQuery" resultType="Orders">
         select * from orders
         <where>
@@ -64,6 +67,7 @@
         </where>
         order by order_time desc
     </select>
+    <!-- 根据时间范围和状态统计营业额 -->
     <select id="sumByMap" resultType="java.lang.Double">
         select sum(amount) from orders
         <where>
@@ -78,7 +82,8 @@
             </if>
         </where>
     </select>
-        <select id="countByMap" resultType="java.lang.Integer">
+    <!-- 根据时间范围和状态统计订单数量 -->
+    <select id="countByMap" resultType="java.lang.Integer">
         select count(id) from orders
         <where>
             <if test="begin!= null">
@@ -92,6 +97,7 @@
             </if>
         </where>
     </select>
+    <!-- 统计指定时间内销量排名前十的商品 -->
     <select id="getSalesTop10" resultType="com.sky.dto.GoodsSalesDTO">
         select od.name, sum(od.number) number
         from order_detail od,orders o
